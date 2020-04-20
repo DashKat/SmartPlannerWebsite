@@ -63,7 +63,7 @@
             var blockStatus = database.ref('status/');
             
             minsTime.on('value', function(snapshot) {
-                blockTime = 60 * parseFloat(snapshot.val());
+                blockTime = parseFloat(snapshot.val());
                 blockTime = parseInt(blockTime);
                 if(blockTime != 0) {
                     timerState.set({value: "true"});
