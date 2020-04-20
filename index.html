@@ -1,0 +1,77 @@
+<html>
+    <body>
+        <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase.js"></script>
+
+        <script>
+
+            var firebaseConfig = {
+              apiKey: "AIzaSyCLVLJ2w6yqDx84QDDUdc85bwRldiTicrA",
+              authDomain: "smart-planner-69420.firebaseapp.com",
+              databaseURL: "https://smart-planner-69420.firebaseio.com",
+              projectId: "smart-planner-69420",
+              storageBucket: "smart-planner-69420.appspot.com",
+              messagingSenderId: "609106850543",
+              appId: "1:609106850543:web:1ec56d8f212fc9ffa2e11a"
+            };
+            
+            function sleep(milliseconds) {
+                const date = Date.now();
+                let currentDate = null;
+                do {
+                    currentDate = Date.now();
+                } 
+                while (currentDate - date < milliseconds);
+            }
+
+            //git testing
+            function setTime(sec) {
+                var secs = String(sec % 60);
+                if(parseInt(secs) < 10) {
+                    secs = "0" + secs;
+                }
+
+                var min = String((Math.floor(sec / 60) % 60));
+                if(parseInt(min) < 10) {
+                    min = "0" + min;
+                } 
+
+                var hours = String(Math.floor(sec / 3600));
+                if(parseInt(hours) < 10) {
+                    hours = "0" + hours;
+                }
+
+                if(sec != 0) {
+                    hoursTime.set({value: String(hours) + ":" + String(min) + ":" + String(secs)});
+                    sec = sec - 1;
+                    sleep(1000);
+                    setTime(sec);
+                }
+                
+                else if(sec == 0) {
+                    hoursTime.set({value: "00:00:00"});
+                    timerState.set({value: "false"});
+                    minTime.set({value: "0"});
+                    status.set({value: "off"});
+                }
+            }
+            
+            firebase.initializeApp(firebaseConfig);
+            var database = firebase.database();
+            var timerState = database.ref('timerIsRunning/');
+            var minTime = database.ref('informalTime/');
+            var minsTime = database.ref('informalTime/value/');
+            var hoursTime = database.ref('formalTime/');
+            var status = database.ref('status/');
+            
+            minsTime.on('value', function(snapshot) {
+                blockTime = 60 * parseFloat(snapshot.val());
+                blockTime = parseInt(blockTime);
+                if(blockTime != 0) {
+                    timerState.set({value: "true"});
+                    setTime(blockTime);
+                }
+            });
+
+        </script>
+    </body>
+</html>
